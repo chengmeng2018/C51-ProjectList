@@ -1,0 +1,11 @@
+".\Objects\STARTUP.obj",
+".\Objects\Clock_T2.obj",
+".\Objects\DeTime.obj",
+".\Objects\DIG4201.obj",
+".\Objects\IAP_EEPROM.obj",
+".\Objects\KeyBoard.obj",
+".\Objects\main.obj",
+".\Objects\motor.obj" 
+TO ".\Objects\Project" 
+
+PRINT(".\Listings\Project.map") REMOVEUNUSED 

@@ -1,0 +1,126 @@
+C51 COMPILER V9.60.0.0   MOTOR                                                             05/08/2020 23:04:05 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MOTOR
+OBJECT MODULE PLACED IN .\Objects\motor.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE motor.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Listings\motor.lst) 
+                    -TABS(2) OBJECT(.\Objects\motor.obj)
+
+line level    source
+
+   1          
+   2          #include <STC8.H>
+   3          #include "motor.h"
+   4          
+   5          sbit IOA = P3^2;
+   6          sbit IOB = P3^3;
+   7          sbit IOC = P3^4;
+   8          sbit IOD = P3^5;
+   9          
+  10          //unsigned char TableA[] = { 0XF7,0XFB,0XF3};  //A线圈细分表
+  11          //unsigned char TableB[] = { 0XeF,0XdF,0XcF};  //B线圈细分表
+  12          
+  13          static unsigned int m_StepTimeMs=10;//步进电机 每步耗时
+  14          char  SW_MOTO;//直流电机和步进电机的选择开关
+  15          static char startFlag=0;
+  16          void InitIO();
+  17          void motorInit()
+  18          {
+  19   1          TMOD = (TMOD&0xF0)|0x00;
+  20   1          TL0 = CountT0;                                 //65536-11.0592M/12/1000
+  21   1          TH0 = CountT0>>8;
+  22   1          TR0 = 1;                                    //启动定时器
+  23   1          ET0 = 1;                                    //使能定时器中断
+  24   1          EA = 1;
+  25   1          InitIO();
+  26   1      }
+  27          void InitIO()
+  28          {
+  29   1          P3M1 &=~(0x3C);
+  30   1          P3M0 &=~(0x3C);
+  31   1      }
+  32          void run(char enble)
+  33          {
+  34   1          startFlag=enble>0;
+  35   1      
+  36   1      }
+  37          void SelectMotorDC(char enble)
+  38          {
+  39   1          SW_MOTO=enble>0;
+  40   1      }
+  41          void motorStep()
+  42          {
+  43   1          if(startFlag)
+  44   1          {
+  45   2              static step;
+  46   2              char IOData;
+  47   2              step=(step+1)%4;
+  48   2              IOData=~(0x01<step)&0x0f;
+  49   2              IOA=IOData>>0;
+  50   2              IOB=IOData>>1;
+  51   2              IOC=IOData>>2;
+  52   2              IOD=IOData>>3;
+  53   2          }
+  54   1          else
+C51 COMPILER V9.60.0.0   MOTOR                                                             05/08/2020 23:04:05 PAGE 2   
+
+  55   1          {
+  56   2              IOA=1;
+  57   2              IOB=1;
+  58   2              IOC=1;
+  59   2              IOD=1;
+  60   2          }
+  61   1      
+  62   1      }
+  63          void MotorDCStep()
+  64          {
+  65   1          if(startFlag)
+  66   1          {
+  67   2              IOA=1;
+  68   2              IOB=0;
+  69   2          }
+  70   1          else
+  71   1          {
+  72   2              IOA=0;
+  73   2              IOB=0;
+  74   2          }
+  75   1      }
+  76          void TM0_Isr() interrupt 1
+  77          {
+  78   1          static int count=0;
+  79   1          count++;
+  80   1          if(m_StepTimeMs==count)
+  81   1          {
+  82   2              count=0;
+  83   2              if(SW_MOTO)
+  84   2              {
+  85   3                  //直流电机
+  86   3                  MotorDCStep();
+  87   3              }
+  88   2              else
+  89   2              {
+  90   3                  //步进电机
+  91   3                  motorStep();
+  92   3              }
+  93   2          }
+  94   1      
+  95   1      
+  96   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    255    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
