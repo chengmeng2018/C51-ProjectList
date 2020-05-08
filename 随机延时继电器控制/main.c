@@ -31,6 +31,7 @@ void main()
     DigInit();//P1 P3.6 P3.7
     InitKeyboard();
     ClockT2_Init();//Use interrupt 12
+		motorInit();
     InitIr();
     ReadAllData();//读取掉电前的数据
     Lasttm=GetClock();
