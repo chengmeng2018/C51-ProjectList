@@ -216,7 +216,7 @@ void SetRunFlag(char enb)
 }
 void WorkSet(char val,KeyState keymode)
 {
-#define workModeNum 5
+#define workModeNum 6
     if(sleepOk!=0 && workMode==0x04 )
     {
         SetRunFlag(1);
