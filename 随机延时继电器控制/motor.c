@@ -27,7 +27,7 @@ void motorInit()
 void InitIO()
 {
     P3M1 &=~(0x3C);
-    P3M0 &=~(0x3C);
+    P3M0 |=(0x3C);
 }
 void run(char enble)
 {
@@ -42,14 +42,14 @@ void motorStep()
 {
     if(startFlag)
     {
-        static step;
+        static char step;
         char IOData;
         step=(step+1)%4;
-        IOData=~(0x01<step)&0x0f;
-        IOA=IOData>>0;
-        IOB=IOData>>1;
-        IOC=IOData>>2;
-        IOD=IOData>>3;
+        IOData=(~(0x01<<step))&0x0f;
+        IOA=(IOData&0x01)!=0;
+        IOB=(IOData&0x02)!=0;
+        IOC=(IOData&0x04)!=0;
+        IOD=(IOData&0x08)!=0;
     }
     else
     {
