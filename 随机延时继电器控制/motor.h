@@ -12,7 +12,6 @@
 #define CountT0 65536-OSC/12/freqT0
 #endif
 
-
 extern char  SW_MOTO;//直流电机和步进电机的选择开关
 
 //初始化电机 使用定时器0

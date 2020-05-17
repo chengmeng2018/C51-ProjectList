@@ -212,7 +212,7 @@ void InitIr()
 void SetRunFlag(char enb)
 {
     RunFlag=enb>0;
-   WriteAllData();
+   //WriteAllData();
 }
 void WorkSet(char val,KeyState keymode)
 {

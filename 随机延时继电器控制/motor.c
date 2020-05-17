@@ -2,15 +2,22 @@
 #include <STC8.H>
 #include "motor.h"
 
+#if 0
 sbit IOA = P3^2;
 sbit IOB = P3^3;
 sbit IOC = P3^4;
 sbit IOD = P3^5;
+#else
+sbit IO4 = P3^2;
+sbit IO5 = P3^3;
+sbit IO3 = P3^4;
+sbit IO2 = P3^5;
+#endif
 
 //unsigned char TableA[] = { 0XF7,0XFB,0XF3};	 //A线圈细分表
 //unsigned char TableB[] = { 0XeF,0XdF,0XcF};	 //B线圈细分表
 
-static unsigned int m_StepTimeMs=10;//步进电机 每步耗时
+static unsigned int m_StepTimeMs=20;//步进电机 每步耗时
 char  SW_MOTO;//直流电机和步进电机的选择开关
 static char startFlag=0;
 void InitIO();
@@ -43,20 +50,26 @@ void motorStep()
     if(startFlag)
     {
         static char step;
-        char IOData;
+        char IOData,step1;
         step=(step+1)%4;
-        IOData=(~(0x01<<step))&0x0f;
-        IOA=(IOData&0x01)!=0;
-        IOB=(IOData&0x02)!=0;
-        IOC=(IOData&0x04)!=0;
-        IOD=(IOData&0x08)!=0;
+				//step1=(step+1)%4;
+				IOData=(0x01<<step);//|(0x01<<step1)
+        IOData=(~IOData)&0x0f;
+        IO5=(IOData&0x01)!=0;
+        IO3=(IOData&0x02)!=0;
+        IO4=(IOData&0x04)!=0;
+        IO3=(IOData&0x08)!=0;
     }
     else
     {
-        IOA=1;
-        IOB=1;
-        IOC=1;
-        IOD=1;
+			IO5=1;
+			IO4=1;
+			IO3=1;
+			IO2=1;
+//        IOA=1;
+//        IOB=1;
+//        IOC=1;
+//        IOD=1;
     }
 
 }
@@ -64,13 +77,13 @@ void MotorDCStep()
 {
     if(startFlag)
     {
-        IOA=1;
-        IOB=0;
+        IO4=1;
+        IO5=0;
     }
     else
     {
-        IOA=0;
-        IOB=0;
+        IO4=0;
+        IO5=0;
     }
 }
 void TM0_Isr() interrupt 1
