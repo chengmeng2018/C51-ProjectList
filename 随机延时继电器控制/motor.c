@@ -49,16 +49,16 @@ void motorStep()
 {
     if(startFlag)
     {
+			char code stepData[8]={0x01,0x03,0x02,0x06,0x04,0x0C,0x08,0x09};
         static char step;
-        char IOData,step1;
-        step=(step+1)%4;
-				//step1=(step+1)%4;
-				IOData=(0x01<<step);//|(0x01<<step1)
-        IOData=(~IOData)&0x0f;
+        char IOData;
+        step=(step+1)%8;
+				IOData=~stepData[step];
+        IOData=(IOData)&0x0f;
         IO5=(IOData&0x01)!=0;
         IO3=(IOData&0x02)!=0;
         IO4=(IOData&0x04)!=0;
-        IO3=(IOData&0x08)!=0;
+        IO2=(IOData&0x08)!=0;
     }
     else
     {
