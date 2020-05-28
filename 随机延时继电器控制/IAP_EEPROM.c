@@ -1,5 +1,5 @@
 
-#include <STC8.H>
+#include <STC8G.H>
 
 #include "IAP_EEPROM.h"
 
@@ -25,7 +25,7 @@ char IapRead(int addr)
 {
     char dat;
     IAP_CONTR = WT_12M;    //使能IAP
-    //	IAP_TPS=13;
+    	IAP_TPS=13;
     IAP_CMD   = 1;                   //设置IAP读命令
     IAP_ADDRL = addr;                //设置IAP低地址
     IAP_ADDRH = addr >> 8;           //设置IAP高地址
@@ -40,7 +40,7 @@ char IapRead(int addr)
 void IapProgram(int addr, char dat)
 {
     IAP_CONTR =  WT_12M;                         //使能IAP
-    //	IAP_TPS= 12;//擦除参数
+    	IAP_TPS= 12;//擦除参数
     IAP_CMD = 2;                                //设置IAP写命令
     IAP_ADDRL = addr;                           //设置IAP低地址
     IAP_ADDRH = addr >> 8;                      //设置IAP高地址
@@ -54,7 +54,7 @@ void IapProgram(int addr, char dat)
 void IapErase(int addr)
 {
     IAP_CONTR =  WT_12M;                         //使能IAP
-    //  IAP_TPS= 13;//擦除参数
+    IAP_TPS= 13;//擦除参数
     IAP_CMD = 3;                                //设置IAP擦除命令
     IAP_ADDRL = addr;                           //设置IAP低地址
     IAP_ADDRH = addr >> 8;                      //设置IAP高地址

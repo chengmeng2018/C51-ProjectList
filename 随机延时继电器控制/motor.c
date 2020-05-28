@@ -14,10 +14,8 @@ sbit IO3 = P3^4;
 sbit IO2 = P3^5;
 #endif
 
-//unsigned char TableA[] = { 0XF7,0XFB,0XF3};	 //A线圈细分表
-//unsigned char TableB[] = { 0XeF,0XdF,0XcF};	 //B线圈细分表
-
-static unsigned int m_StepTimeMs=20;//步进电机 每步耗时
+//10K的中断频率
+static unsigned int m_StepTimeMs=2;//步进电机 每步耗时
 char  SW_MOTO;//直流电机和步进电机的选择开关
 static char startFlag=0;
 void InitIO();
@@ -26,6 +24,7 @@ void motorInit()
     TMOD = (TMOD&0xF0)|0x00;
     TL0 = CountT0;                                 //65536-11.0592M/12/1000
     TH0 = CountT0>>8;
+		//AUXR|=T0x12; //1T工作模式
     TR0 = 1;                                    //启动定时器
     ET0 = 1;                                    //使能定时器中断
     EA = 1;
@@ -50,14 +49,15 @@ void motorStep()
     if(startFlag)
     {
 			char code stepData[8]={0x01,0x03,0x02,0x06,0x04,0x0C,0x08,0x09};
+			//char code stepData[8]={0x01,0x02,0x04,0x08,0x01,0x02,0x04,0x08};
         static char step;
         char IOData;
         step=(step+1)%8;
 				IOData=~stepData[step];
         IOData=(IOData)&0x0f;
         IO5=(IOData&0x01)!=0;
-        IO3=(IOData&0x02)!=0;
-        IO4=(IOData&0x04)!=0;
+        IO4=(IOData&0x02)!=0;
+        IO3=(IOData&0x04)!=0;
         IO2=(IOData&0x08)!=0;
     }
     else
@@ -66,10 +66,6 @@ void motorStep()
 			IO4=1;
 			IO3=1;
 			IO2=1;
-//        IOA=1;
-//        IOB=1;
-//        IOC=1;
-//        IOD=1;
     }
 
 }
